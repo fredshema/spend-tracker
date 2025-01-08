@@ -4,7 +4,7 @@ interface ProgressBarProps {
   min: number;
 }
 
-export function ProgressBar({ value, max, min }: ProgressBarProps) {
+export function ProgressBar({ value, max }: ProgressBarProps) {
   const absValue = Math.abs(value);
   const percentage = (absValue / max) * 50; // 50% of the bar represents the full value
   const barWidth = `${Math.min(percentage, 50)}%`;

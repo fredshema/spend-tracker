@@ -56,7 +56,7 @@ export default function SpendTracker() {
   const handleSetAmount = () => {
     const newAmt = parseInt(newAmount, 10);
     if (!isNaN(newAmt)) {
-      setAmount(prev => {
+      setAmount(() => {
         localStorage.setItem('amount', newAmt.toString());
         return newAmt;
       });
@@ -86,7 +86,7 @@ export default function SpendTracker() {
           <p className="text-xl font-semibold mb-8">
             Balance: {amount.toLocaleString()} RWF
           </p>
-          <ProgressBar value={amount} max={calculateMax(amount)} min={DAILY_AMOUNT} />
+          <ProgressBar value={amount} max={calculateMax(amount)} />
         </div>
         <div className="my-8 flex space-x-4">
           <Dialog open={isSetOpen} onOpenChange={setIsSetOpen}>
