@@ -6,14 +6,14 @@ import { Input } from "@/components/ui/input"
 import { useEffect, useState } from 'react'
 import { ProgressBar } from '../components/ProgressBar'
 
-const DAILY_POINTS = 5000;
+const DAILY_AMOUNT = 5000;
 
 const calculateMax = (currentAmount: number) => {
-  return Math.max(Math.abs(currentAmount), DAILY_POINTS);
+  return Math.max(Math.abs(currentAmount), DAILY_AMOUNT);
 };
 
-export default function PointTracker() {
-  const [amount, setAmount] = useState(DAILY_POINTS);
+export default function SpendTracker() {
+  const [amount, setAmount] = useState(DAILY_AMOUNT);
   const [spendAmount, setSpendAmount] = useState('');
   const [newAmount, setNewAmount] = useState('');
   const [isSpendOpen, setIsSpendOpen] = useState(false);
@@ -31,7 +31,7 @@ export default function PointTracker() {
 
     if (lastUpdate !== today) {
       setAmount(prevAmount => {
-        const newAmount = prevAmount + DAILY_POINTS;
+        const newAmount = prevAmount + DAILY_AMOUNT;
         localStorage.setItem('amount', newAmount.toString());
         return newAmount;
       });
@@ -42,7 +42,7 @@ export default function PointTracker() {
       const currentDate = new Date().toDateString();
       if (currentDate !== localStorage.getItem('lastUpdate')) {
         setAmount(prevAmount => {
-          const newAmount = prevAmount + DAILY_POINTS;
+          const newAmount = prevAmount + DAILY_AMOUNT;
           localStorage.setItem('amount', newAmount.toString());
           localStorage.setItem('lastUpdate', currentDate);
           return newAmount;
@@ -86,7 +86,7 @@ export default function PointTracker() {
           <p className="text-xl font-semibold mb-8">
             Balance: {amount.toLocaleString()} RWF
           </p>
-          <ProgressBar value={amount} max={calculateMax(amount)} min={DAILY_POINTS} />
+          <ProgressBar value={amount} max={calculateMax(amount)} min={DAILY_AMOUNT} />
         </div>
         <div className="my-8 flex space-x-4">
           <Dialog open={isSetOpen} onOpenChange={setIsSetOpen}>
