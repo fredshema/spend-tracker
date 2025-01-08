@@ -1,7 +1,6 @@
 interface ProgressBarProps {
   value: number;
   max: number;
-  min: number;
 }
 
 export function ProgressBar({ value, max }: ProgressBarProps) {
