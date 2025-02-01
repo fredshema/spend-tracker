@@ -44,6 +44,19 @@ export default function SpendTracker() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  const syncTheme = () => {
+    let isDark = false;
+    const cache = localStorage.getItem('theme');
+
+    if (cache === null) {
+      isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } else {
+      isDark = cache === 'dark';
+    }
+
+    setTheme(isDark);
+  }
+
   useEffect(() => {
     syncTheme();
     setTransactions(getTransactions());
@@ -79,7 +92,7 @@ export default function SpendTracker() {
     }, 60000); // Check every minute
 
     return () => clearInterval(timer);
-  }, []);
+  }, [syncTheme]);
 
   const handleSetAmount = () => {
     const newAmt = parseInt(newAmount, 10);
@@ -108,18 +121,7 @@ export default function SpendTracker() {
     }
   };
 
-  const syncTheme = () => {
-    let isDark = false;
-    let cache = localStorage.getItem('theme');
 
-    if (cache === null) {
-      isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    } else {
-      isDark = cache === 'dark';
-    }
-
-    setTheme(isDark);
-  }
 
   const setTheme = (isDarkMode: boolean) => {
     setIsDarkMode(isDarkMode);
