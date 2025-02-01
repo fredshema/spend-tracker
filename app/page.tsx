@@ -8,8 +8,31 @@ import { ProgressBar } from '../components/ProgressBar'
 
 const DAILY_AMOUNT = 5000;
 
+type Transaction = {
+  amount: number;
+  date: string;
+};
+
 const calculateMax = (currentAmount: number) => {
   return Math.max(Math.abs(currentAmount), DAILY_AMOUNT);
+};
+
+const saveTransaction = (amount: number, setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>) => {
+  const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+  const newTransaction = {
+    amount,
+    date: new Date().toLocaleString(),
+  };
+  transactions.unshift(newTransaction);
+  if (transactions.length > 3) {
+    transactions.pop();
+  }
+  localStorage.setItem('transactions', JSON.stringify(transactions));
+  setTransactions(transactions);
+};
+
+const getTransactions = (): Transaction[] => {
+  return JSON.parse(localStorage.getItem('transactions') || '[]');
 };
 
 export default function SpendTracker() {
@@ -18,8 +41,10 @@ export default function SpendTracker() {
   const [newAmount, setNewAmount] = useState('');
   const [isSpendOpen, setIsSpendOpen] = useState(false);
   const [isSetOpen, setIsSetOpen] = useState(false);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
+    setTransactions(getTransactions());
     const storedAmount = localStorage.getItem('amount');
     if (storedAmount) {
       setAmount(parseInt(storedAmount, 10));
@@ -60,6 +85,7 @@ export default function SpendTracker() {
         localStorage.setItem('amount', newAmt.toString());
         return newAmt;
       });
+      saveTransaction(newAmt, setTransactions);
       setNewAmount('');
       setIsSetOpen(false);
     }
@@ -73,6 +99,7 @@ export default function SpendTracker() {
         localStorage.setItem('amount', newAmount.toString());
         return newAmount;
       });
+      saveTransaction(-spend, setTransactions);
       setSpendAmount('');
       setIsSpendOpen(false);
     }
@@ -128,6 +155,22 @@ export default function SpendTracker() {
               </div>
             </DialogContent>
           </Dialog>
+        </div>
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Recent Transactions</h2>
+          {transactions.length === 0 ? (
+            <p>No transactions yet.</p>
+          ) : (
+            <ul>
+              {transactions.map((transaction, index) => (
+                <li key={index} className="mb-2 text-sm flex flex-row flex-nowrap items-center">
+                  <span className="inline">{transaction.amount.toLocaleString()} RWF</span>
+                  <span className="border-dashed flex-1 border-b h-1 mx-2 border-gray-500"></span>
+                  <span className="inline">{transaction.date}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>
