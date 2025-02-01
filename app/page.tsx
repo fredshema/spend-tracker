@@ -42,9 +42,12 @@ export default function SpendTracker() {
   const [isSpendOpen, setIsSpendOpen] = useState(false);
   const [isSetOpen, setIsSetOpen] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
+    syncTheme();
     setTransactions(getTransactions());
+
     const storedAmount = localStorage.getItem('amount');
     if (storedAmount) {
       setAmount(parseInt(storedAmount, 10));
@@ -105,10 +108,34 @@ export default function SpendTracker() {
     }
   };
 
+  const syncTheme = () => {
+    let isDark = false;
+    let cache = localStorage.getItem('theme');
+
+    if (cache === null) {
+      isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    } else {
+      isDark = cache === 'dark';
+    }
+
+    setTheme(isDark);
+  }
+
+  const setTheme = (isDarkMode: boolean) => {
+    setIsDarkMode(isDarkMode);
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark', isDarkMode);
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-black dark:text-white">
       <div className="p-8 rounded-lg w-96">
-        <h1 className="text-2xl font-bold mb-8">Spend Tracker</h1>
+        <div className="flex flex-row flex-nowrap items-center justify-between mb-8">
+          <h1 className="text-2xl font-bold">Spend Tracker</h1>
+          <Button onClick={() => setTheme(!isDarkMode)} className="px-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><defs><mask id="lineMdLightDark0"><circle cx={7.5} cy={7.5} r={5.5} fill="#fff"></circle><circle cx={11} cy={7.5} r={6.5}></circle></mask><mask id="lineMdLightDark1"><g fill="#fff"><circle cx={12} cy={15} r={5.5}></circle><g><use href="#lineMdLightDark2" transform="rotate(-75 12 15)"></use><use href="#lineMdLightDark2" transform="rotate(-25 12 15)"></use><use href="#lineMdLightDark2" transform="rotate(25 12 15)"></use><use href="#lineMdLightDark2" transform="rotate(75 12 15)"></use></g></g><path d="M0 10h26v5h-26z"></path><path stroke="#fff" strokeWidth={2} d="M23 12h-22"></path></mask><symbol id="lineMdLightDark2"><path d="M10.5 21.5h3L12 24z"></path></symbol></defs><g fill="currentColor"><rect width={13} height={13} x={1} y={1} mask="url(#lineMdLightDark0)"></rect><path d="M-2 11h28v13h-28z" mask="url(#lineMdLightDark1)" transform="rotate(-45 12 12)"></path></g></svg>
+          </Button>
+        </div>
         <div className="mb-6">
           <p className="text-xl font-semibold mb-8">
             Balance: {amount.toLocaleString()} RWF
