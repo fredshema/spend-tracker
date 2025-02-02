@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { useEffect, useState } from 'react'
 import { ProgressBar } from '../components/ProgressBar'
 
-const DAILY_AMOUNT = 5000;
+const DAILY_AMOUNT = 6000;
 
 type Transaction = {
   amount: number;
