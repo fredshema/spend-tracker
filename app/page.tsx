@@ -59,6 +59,9 @@ export default function SpendTracker() {
 
   useEffect(() => {
     syncTheme();
+  }, []);
+
+  useEffect(() => {
     setTransactions(getTransactions());
 
     const storedAmount = localStorage.getItem('amount');
@@ -92,7 +95,7 @@ export default function SpendTracker() {
     }, 60000); // Check every minute
 
     return () => clearInterval(timer);
-  }, [syncTheme]);
+  }, [setAmount]);
 
   const handleSetAmount = () => {
     const newAmt = parseInt(newAmount, 10);
